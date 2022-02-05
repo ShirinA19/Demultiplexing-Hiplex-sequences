@@ -1,0 +1,39 @@
+#!/bin/bash -l
+# This is a job script to detag sample RB-1743-4_S1_L001
+set -e
+#
+# Request 12 hours, 0 minutes, 0 seconds run time
+#$ -l h_rt=48:0:0
+#
+# Request 8GB memory (check the need for your specific program!)
+#$ -l h_vmem=16G
+#
+# Request mails to be sent when the job finishes (e) or if it fails (a)
+#$ -M shirin.akhter@slu.se
+#
+# Run in the current directory (otherwise it will run from your home directory)
+#$ -cwd
+#
+# Keep all output in a single file
+#$ -j y
+#
+# We like to run "cores" at the same time
+#$ -pe smp 4
+# Place your commands below this line
+# Create output directory
+mkdir demultiplexed_RB-1743-4_S2_L001.corrected
+#load module
+module load python3
+module load biopython-py3
+# Run detag (note the backslash wich joins the lines into a single command)
+python3 detag.py3 --tags /proj/mykopat-acrocona/input_files_acrocona_/tags2.txt \
+                  --heel /proj/mykopat-acrocona/input_files_acrocona_/heel.txt \
+                   --pairedfastq \
+                   --forward /proj/mykopat-acrocona/RB-1743/180529_M00485_0427_000000000-BLNTC/180529_M00485_0427_000000000-BLNTC/Sample_RB-1743-4/RB-1743-4_S1_L001_R1_001.fastq \
+                   --reverse /proj/mykopat-acrocona/RB-1743/180529_M00485_0427_000000000-BLNTC/180529_M00485_0427_000000000-BLNTC/Sample_RB-1743-4/RB-1743-4_S1_L001_R2_001.fastq \
+                   --pairedparams 7:5:10 \
+                   --outputprefix ./demultiplexed_RB-1743-4_S2_L001.corrected/acrocona_hiplex_RB-1743-4_S2_L001_nov18 \
+                   --h5score 0.9 \
+                   --h3score 0.9 \
+                   --filtering 1:50:150:20:15 \
+                   --gsp /proj/mykopat-acrocona/input_files_acrocona_/acrocona.hiplex.primer.txt
